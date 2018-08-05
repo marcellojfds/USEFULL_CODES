@@ -1,0 +1,21 @@
+install.packages("rpart")
+library(rpart)
+
+print(database)
+
+set.seed(1)
+n=1000
+
+shuffled=database[sample(n),]
+TEST_BASE=shuffled[1:round(0.7*n),]
+TEST_BASE=shuffled[(round(0.7*n)+1):n,]
+tree=rpart(VAR_PARA_PREVISÂO~., data=TEST_BASE, method="class", use="pairwise.complete.obs")
+pred=predict(tree, TEST_BASE, type="class")
+pred=as.data.frame(pred)
+conf=table(TEST_BASE$VAR_PARA_PREVISÂO,pred$pred)
+print(conf)
+
+print(nrow(pred))
+
+accuracy=((conf[1,1]+conf[2,2])/(conf[1,2]+conf[2,1]+conf[1,1]+conf[2,2]))
+print(accuracy)
